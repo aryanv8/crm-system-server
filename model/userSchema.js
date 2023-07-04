@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Grid = require("gridfs-stream");
 const multer = require("multer");
-const GridFsStorage = require("multer-gridfs-storage");
+const { GridFsStorage } = require("multer-gridfs-storage");
+Grid.mongo = mongoose.mongo;
 
 // Create GridFS storage engine
 const storage = new GridFsStorage({
-  url: "mongodb://localhost:27017/your-database-name",
+  url: "mongodb://localhost:27017/crm-system",
   file: (req, file) => {
     return {
       bucketName: "uploads",
@@ -62,14 +63,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+  }
 });
 
-// Create a virtual property to retrieve the image URL
-userSchema.virtual("imageUrl").get(function () {
-  const gfs = Grid(mongoose.connection.db, mongoose.mongo);
+userSchema.methods.getImageUrl = function () {
   return `/uploads/${this.image}`;
-});
+};
+
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = { User, upload };
+module.exports = { User, upload};
