@@ -186,4 +186,70 @@ router.post("/login", upload.none(), async (req, res) => {
   }
 });
 
+// Update a user
+router.put("/update", upload.single("image"), async (req, res) => {
+  try {
+    // Retrieve the form data
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      dob,
+      gender,
+      company,
+      jobTitle,
+      country,
+      address,
+      password,
+    } = req.body;
+
+    // Get the uploaded image filename
+    const image = req.file.filename;
+
+    // update the user document
+    const user = await User.findByIdAndUpdate(
+      req.body.id,
+      {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dob,
+        gender,
+        image,
+        company,
+        jobTitle,
+        country,
+        address,
+        password,
+      },
+      { new: true }
+    );
+    res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error updating user" });
+  }
+});
+
+// Delete a user
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    // Retrieve the user id from the request params
+    const { id } = req.params;
+    console.log(req.params);
+    console.log(id);
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error deleting user" });
+  }
+});
+
+
+
 module.exports = router;
