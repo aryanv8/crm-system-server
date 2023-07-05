@@ -28,7 +28,13 @@ This repository contains the server side of the CRM system. It is a REST API bui
   | `/delete/:id`       | DELETE | Deletes the user with the specified `id`    |
   | `/check-email`      | POST   | Check if the user with email exists, if yes then returns the userid |
   | `/update-password`  | PUT    | Changes the password using the email. Use md5 in password before sending the request (check Signup Page / Login Page) otherwise login will not be successful |
-  | `/submit-feedback`    | POST  | Submits the feedback. Product id and user id are required to track who posted the feedback and about which product | |
+  | `/submit-feedback`    | POST  | Submits the feedback. Product id and user id are required to track who posted the feedback and about which product |
+
+- ### Admin - `/admin`
+  | API | Type | Description |
+  | --- | --- | --- |
+  | `/update-insights` | PATCH | Updates the insights data in the database |
+  | `/insights` | GET | Fetches the insights stored in the database. **Does Not Fetch The Latest Data** |
 
 - ### Product - `/product`
   | API                | Type   | Description                                  |

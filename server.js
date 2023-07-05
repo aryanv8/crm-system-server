@@ -5,6 +5,7 @@ const userRoute = require('./controller/userRoute')
 const { updateInsights } = require("./insights.js");
 const cors = require('cors')
 const schedule = require("node-schedule");
+const adminRoute = require('./controller/adminRoute')
 
 require('dotenv').config()
 
@@ -33,7 +34,12 @@ app.use(cors())
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// User routes
 app.use('/user', userRoute)
+
+// Admin routes
+app.use('/admin', adminRoute)
 
 app.post("/insights/update", (req, res) => {
   updateInsights();
