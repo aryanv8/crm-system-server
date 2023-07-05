@@ -9,7 +9,7 @@ This repository contains the server side of the CRM system. It is a REST API bui
 3. Create a `.env` file in the root directory and add the following variables:
    ```js
    PORT = 4000;
-   MONGODB_URI = "mongodb://localhost:27017/crm-system";
+   MONGO_URI = "mongodb://localhost:27017/crm-system";
    ```
 4. Run `npm start` to start the server
 
