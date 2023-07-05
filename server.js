@@ -2,7 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const userRoute = require('./controller/userRoute')
+const { updateInsights } = require("./insights.js");
 const cors = require('cors')
+const schedule = require("node-schedule");
 
 require('dotenv').config()
 
@@ -22,6 +24,7 @@ db.on('error', () => {
 
 db.once('open', () => {
   console.log('Successfully opened the database')
+  startScheduler();
 })
 
 const app = express()
@@ -31,6 +34,15 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/user', userRoute)
+
+app.post("/insights/update", (req, res) => {
+  updateInsights();
+  res.send("Insights update triggered.");
+});
+
+function startScheduler() {
+  schedule.scheduleJob("0 * * * *", updateInsights);
+}
 
 app.listen(PORT, () => {
   console.log(`Listening at :${PORT}...`)

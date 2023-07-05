@@ -73,6 +73,11 @@ userSchema.methods.getImageUrl = function () {
   return `/uploads/${this.image}`;
 };
 
+// Enable the aggregate function for the User schema
+userSchema.statics.aggregate = function () {
+  return this.model("User").aggregate.apply(this.model("User"), arguments);
+};
+
 
 const User = mongoose.model("User", userSchema);
 
