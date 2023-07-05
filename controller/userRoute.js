@@ -1,5 +1,6 @@
 const express = require("express");
 const { User } = require("../model/userSchema");
+const { Feedback } = require("../model/feedbackSchema");
 const { upload } = require("../model/userSchema"); // Assuming you've defined the User schema and upload middleware
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -295,6 +296,25 @@ router.put("/update-password", upload.none(), async (req, res) => {
     res.status(500).json({ error: "Error updating user" });
   }
 });
+
+// submit feedback
+router.post("/submit-feedback", upload.none(), async (req, res) => {
+  try {
+
+    // Create a new feedback document
+    const feedback = new Feedback(req.body);
+    console.log(feedback);
+
+    // Save the feedback to the database
+    await feedback.save();
+
+    res.status(200).json({ message: "Feedback submitted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error submitting feedback" });
+  }
+});
+
 
 
 
