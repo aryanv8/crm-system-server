@@ -26,6 +26,7 @@ This repository contains the server side of the CRM system. It is a REST API bui
   | `/login`            | POST   | Checks the credentials and returns the user |
   | `/update`           | PUT    | Updates user information                    |
   | `/delete/:id`       | DELETE | Deletes the user with the specified `id`    |
+  | `/check-email`      | POST   | Check if the user with email exists, if yes then returns the userid |
 
 - ### Product - `/product`
   | API                | Type   | Description                                  |

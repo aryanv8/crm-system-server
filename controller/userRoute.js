@@ -238,15 +238,40 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     // Retrieve the user id from the request params
     const { id } = req.params;
+
     console.log(req.params);
     console.log(id);
 
-    await User.findByIdAndDelete(id);
+    const _id = new ObjectId(id)
+
+    await User.findByIdAndDelete(_id);
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error deleting user" });
+  }
+});
+
+// check if email exists, if exists return user id
+router.post("/check-email", upload.none(), async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(req.body);
+    console.log(email);
+
+    const userid = await User.findOne({ email: email }, {_id: 1}).exec();
+    console.log("userid", userid);
+    if (userid) {
+      res.status(200).json({
+        userid: userid._id,
+      });
+    } else {
+      res.status(500).json({ error: "Error getting user" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error getting user" });
   }
 });
 
