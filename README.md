@@ -27,6 +27,7 @@ This repository contains the server side of the CRM system. It is a REST API bui
   | `/update`           | PUT    | Updates user information                    |
   | `/delete/:id`       | DELETE | Deletes the user with the specified `id`    |
   | `/check-email`      | POST   | Check if the user with email exists, if yes then returns the userid |
+  | `/update-password`  | PUT    | Changes the password using the email. Use md5 in password before sending the request (check Signup Page / Login Page) otherwise login will not be successful |
 
 - ### Product - `/product`
   | API                | Type   | Description                                  |

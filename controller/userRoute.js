@@ -275,6 +275,27 @@ router.post("/check-email", upload.none(), async (req, res) => {
   }
 });
 
+// update password by email
+router.put("/update-password", upload.none(), async (req, res) => {
+  try {
+    // Retrieve the form data
+    const { email, password } = req.body;
+
+    // update the user document
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      {
+        password,
+      },
+      { new: true }
+    );
+    res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error updating user" });
+  }
+});
+
 
 
 module.exports = router;
