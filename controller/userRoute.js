@@ -243,7 +243,24 @@ router.delete("/delete/:id", async (req, res) => {
     console.log(req.params);
     console.log(id);
 
-    const _id = new ObjectId(id)
+    const _id = new ObjectId(id);
+    const user = await User.findById(_id);
+    console.log(user);
+
+    // delete image file
+    const filename = user.image;
+
+    // find the file in GridFS
+    const file = await bucket.find({ filename: filename }).toArray();
+    console.log(file);
+
+    // delete the file from GridFS
+    const fileId = file[0]._id;
+
+    console.log(fileId);
+    if (fileId) {
+      await bucket.delete(fileId)
+    }
 
     await User.findByIdAndDelete(_id);
 
@@ -261,7 +278,7 @@ router.post("/check-email", upload.none(), async (req, res) => {
     console.log(req.body);
     console.log(email);
 
-    const userid = await User.findOne({ email: email }, {_id: 1}).exec();
+    const userid = await User.findOne({ email: email }, { _id: 1 }).exec();
     console.log("userid", userid);
     if (userid) {
       res.status(200).json({
@@ -300,7 +317,6 @@ router.put("/update-password", upload.none(), async (req, res) => {
 // submit feedback
 router.post("/submit-feedback", upload.none(), async (req, res) => {
   try {
-
     // Create a new feedback document
     const feedback = new Feedback(req.body);
     console.log(feedback);
@@ -315,7 +331,25 @@ router.post("/submit-feedback", upload.none(), async (req, res) => {
   }
 });
 
+router.get("/delete-passwordless-users", async (req, res) => {
+  try {
+    // Retrieve all users from the database
+    const users = await User.find();
+    let usersToDelete = [];
+    users.forEach((user) => {
+      if (!user.password) {
+        usersToDelete.push(user._id);
+      }
+    });
 
-
+    // delete image files of users to be deleted
+    usersToDelete.forEach(async (userid) => {
+      res.status(200).json({ usersToDelete });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error getting users" });
+  }
+});
 
 module.exports = router;
