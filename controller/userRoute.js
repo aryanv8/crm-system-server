@@ -192,7 +192,7 @@ router.post("/login", upload.none(), async (req, res) => {
 });
 
 // Update a user
-router.put("/update", upload.single("image"), async (req, res) => {
+router.post("/update", upload.single("image"), async (req, res) => {
   try {
     // Retrieve the form data
     const {
@@ -207,14 +207,36 @@ router.put("/update", upload.single("image"), async (req, res) => {
       country,
       address,
       password,
+      _id,
     } = req.body;
+    console.log("Body:", req.body);
+    // Retrieve the existing user document
+    console.log("id:", _id);
+    const user = await User.findById(_id);
+    console.log(user);
 
-    // Get the uploaded image filename
-    const image = req.file.filename;
+    // Check if password is provided in the request body
+    const updatedPassword = password === "" ? password : user.password;
 
-    // update the user document
-    const user = await User.findByIdAndUpdate(
-      req.body.id,
+    let updatedImage = user.image;
+
+    // Check if an image was uploaded
+    if (req.file) {
+      updatedImage = req.file.filename;
+
+      // Delete the previous image file from GridFS
+      const filename = user.image;
+      const file = await bucket.find({ filename }).toArray();
+
+      if (file.length > 0) {
+        const fileId = file[0]._id;
+        await bucket.delete(fileId);
+      }
+    }
+
+    // Update the user document
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
       {
         firstName,
         lastName,
@@ -222,16 +244,17 @@ router.put("/update", upload.single("image"), async (req, res) => {
         phone,
         dob,
         gender,
-        image,
         company,
         jobTitle,
         country,
         address,
-        password,
+        password: updatedPassword,
+        image: updatedImage,
       },
       { new: true }
     );
-    res.status(200).json({ user });
+
+    res.status(200).json({ user: updatedUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error updating user" });
@@ -259,11 +282,13 @@ router.delete("/delete/:id", async (req, res) => {
     console.log(file);
 
     // delete the file from GridFS
-    const fileId = file[0]._id;
+    if (file.length > 0) {
+      const fileId = file[0]._id;
 
-    console.log(fileId);
-    if (fileId) {
-      await bucket.delete(fileId)
+      console.log(fileId);
+      if (fileId) {
+        await bucket.delete(fileId);
+      }
     }
 
     await User.findByIdAndDelete(_id);

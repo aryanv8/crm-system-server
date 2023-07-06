@@ -5,7 +5,15 @@ const feedbackSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  productname: {
+    type: String,
+    required: true,
+  },
   userid: {
+    type: String,
+    required: true,
+  },
+  username: {
     type: String,
     required: true,
   },
