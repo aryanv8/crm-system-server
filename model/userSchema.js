@@ -4,9 +4,11 @@ const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 Grid.mongo = mongoose.mongo;
 
+require("dotenv").config();
+
 // Create GridFS storage engine
 const storage = new GridFsStorage({
-  url: "mongodb://localhost:27017/crm-system",
+  url: `${process.env.MONGO_URI}`,
   file: (req, file) => {
     return {
       bucketName: "uploads",
