@@ -103,13 +103,17 @@ router.get("/image/:filename", async (req, res) => {
 
     // For example, if you're using GridFS:
     // const gfs = gfs// Your GridFS connection or instance
-    bucket.openDownloadStreamByName(filename).pipe(res);
+    const fileStream = bucket.openDownloadStreamByName(filename);
 
+    fileStream.on("error", (error) => {
+      console.log(error);
+      res.status(500).json({ error: "Error retrieving image" });
+    });
     // Set the appropriate content type header based on the image type
     // res.set('Content-Type', 'image/*');
 
     // Pipe the image data to the response object
-    // readStream.pipe(res);
+    fileStream.pipe(res);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error retrieving image" });
