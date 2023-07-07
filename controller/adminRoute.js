@@ -24,7 +24,7 @@ router.get("/insights", async (req, res) => {
 router.get("/feedback/all", async (req, res) => {
   try {
     const feedbacks = await Feedback.find()
-    res.status(200).json(feedbacks)
+    res.status(200).json({feedbacks})
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: "Error getting feedbacks" })
