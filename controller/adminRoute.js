@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { updateInsights } = require("../insights.js");
 const Insights = require("../model/insightSchema");
-const async = require("hbs/lib/async.js");
+// const async = require("hbs/lib/async.js");
 const { Feedback } = require("../model/feedbackSchema.js");
 
 router.patch("/update-insights", (req, res) => {
