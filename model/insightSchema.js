@@ -40,6 +40,30 @@ const insightSchema = new mongoose.Schema({
       },
     },
   ],
+  ageCounts: [
+    {
+      _id: {
+        type: String,
+        required: true,
+      },
+      count: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
+  jobCounts: [
+    {
+      _id: {
+        type: String,
+        required: true,
+      },
+      count: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
 });
 
 const Insight = mongoose.model("Insight", insightSchema);

@@ -381,4 +381,37 @@ router.get("/delete-passwordless-users", async (req, res) => {
   }
 });
 
+// Temporary routes for testing
+router.get("/all-with-age", async (req, res) => {
+  try {
+    // Retrieve all users from the database
+    const users = await User.find();
+
+    // Calculate and add the age of each user using their date of birth
+    const usersWithAge = users.map((user) => {
+      // Assuming the date of birth is stored in the 'dob' property of each user
+      const dob = new Date(user.dob);
+      const formattedDob = dob.toLocaleDateString("en-GB"); // Convert to dd/mm/yyyy format
+
+      // Calculate the age based on the current date
+      const ageDiff = Date.now() - dob.getTime();
+      const ageDate = new Date(ageDiff); // Milliseconds from epoch
+      const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+      // Create a new object with the additional 'age' and 'formattedDob' properties
+      return {
+        ...user.toObject(),
+        age,
+        formattedDob,
+      };
+    });
+
+    res.json(usersWithAge);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 module.exports = router;
