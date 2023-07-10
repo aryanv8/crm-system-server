@@ -6,11 +6,18 @@ const { updateInsights } = require("./insights.js");
 const cors = require('cors')
 const schedule = require("node-schedule");
 const adminRoute = require('./controller/adminRoute')
+const https = require('https')
+const fs = require('fs')
 
 require('dotenv').config()
 
-// constanst
-const PORT = process.env.PORT || 4500
+const options = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
+};
+
+// constants
+const PORT = process.env.PORT || 443
 
 // middlewares
 mongoose.set('strictQuery', false)
@@ -50,6 +57,8 @@ function startScheduler() {
   schedule.scheduleJob("0 * * * *", updateInsights);
 }
 
-app.listen(PORT, () => {
+const server = https.createServer(options, app)
+
+server.listen(PORT, () => {
   console.log(`Listening at :${PORT}...`)
 })
