@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { updateInsights } = require("../insights.js");
 const Insights = require("../model/insightSchema");
-const async = require("hbs/lib/async.js");
+//const async = require("hbs/lib/async.js");
 const { Feedback } = require("../model/feedbackSchema.js");
 
 router.patch("/update-insights", (req, res) => {
@@ -24,7 +24,8 @@ router.get("/insights", async (req, res) => {
 router.get("/feedback/all", async (req, res) => {
   try {
     const feedbacks = await Feedback.find()
-    res.status(200).json(feedbacks)
+    console.log(feedbacks)
+    res.status(200).json({feedbacks})
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: "Error getting feedbacks" })
