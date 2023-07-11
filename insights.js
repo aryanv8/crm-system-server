@@ -45,6 +45,111 @@ async function updateInsights() {
       ])
       .toArray();
     
+    // const ageCounts = await User.collection
+    //   .aggregate([
+    //     {
+    //       $group: {
+    //         _id: {
+    //           $switch: {
+    //             branches: [
+    //               {
+    //                 case: {
+    //                   $lt: ["$dob", moment().subtract(20, "years").toDate()],
+    //                 },
+    //                 then: "<20",
+    //               },
+    //               {
+    //                 case: {
+    //                   $and: [
+    //                     {
+    //                       $gte: [
+    //                         "$dob",
+    //                         moment().subtract(30, "years").toDate(),
+    //                       ],
+    //                     },
+    //                     {
+    //                       $lt: [
+    //                         "$dob",
+    //                         moment().subtract(20, "years").toDate(),
+    //                       ],
+    //                     },
+    //                   ],
+    //                 },
+    //                 then: "20-30",
+    //               },
+    //               {
+    //                 case: {
+    //                   $and: [
+    //                     {
+    //                       $gte: [
+    //                         "$dob",
+    //                         moment().subtract(40, "years").toDate(),
+    //                       ],
+    //                     },
+    //                     {
+    //                       $lt: [
+    //                         "$dob",
+    //                         moment().subtract(30, "years").toDate(),
+    //                       ],
+    //                     },
+    //                   ],
+    //                 },
+    //                 then: "30-40",
+    //               },
+    //               {
+    //                 case: {
+    //                   $and: [
+    //                     {
+    //                       $gte: [
+    //                         "$dob",
+    //                         moment().subtract(50, "years").toDate(),
+    //                       ],
+    //                     },
+    //                     {
+    //                       $lt: [
+    //                         "$dob",
+    //                         moment().subtract(40, "years").toDate(),
+    //                       ],
+    //                     },
+    //                   ],
+    //                 },
+    //                 then: "40-50",
+    //               },
+    //               {
+    //                 case: {
+    //                   $and: [
+    //                     {
+    //                       $gte: [
+    //                         "$dob",
+    //                         moment().subtract(60, "years").toDate(),
+    //                       ],
+    //                     },
+    //                     {
+    //                       $lt: [
+    //                         "$dob",
+    //                         moment().subtract(50, "years").toDate(),
+    //                       ],
+    //                     },
+    //                   ],
+    //                 },
+    //                 then: "50-60",
+    //               },
+    //               {
+    //                 case: {
+    //                   $gte: ["$dob", moment().subtract(60, "years").toDate()],
+    //                 },
+    //                 then: ">60",
+    //               },
+    //             ],
+    //             default: null,
+    //           },
+    //         },
+    //         count: { $sum: 1 },
+    //       },
+    //     },
+    //   ])
+    //   .toArray();
+
     const ageCounts = await User.collection
       .aggregate([
         {
@@ -54,7 +159,7 @@ async function updateInsights() {
                 branches: [
                   {
                     case: {
-                      $lt: ["$dob", moment().subtract(20, "years").toDate()],
+                      $gte: ["$dob", moment().subtract(20, "years").toDate()],
                     },
                     then: "<20",
                   },
@@ -136,7 +241,7 @@ async function updateInsights() {
                   },
                   {
                     case: {
-                      $gte: ["$dob", moment().subtract(60, "years").toDate()],
+                      $lt: ["$dob", moment().subtract(60, "years").toDate()],
                     },
                     then: ">60",
                   },
@@ -147,9 +252,15 @@ async function updateInsights() {
             count: { $sum: 1 },
           },
         },
+        {
+          $match: {
+            _id: { $ne: null }, // Exclude documents with null age groups
+          },
+        },
       ])
       .toArray();
 
+    
     // Prepare the updated insights object
     const updatedInsights = {
       maleCount,
